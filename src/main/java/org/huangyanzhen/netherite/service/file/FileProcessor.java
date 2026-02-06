@@ -10,9 +10,9 @@ import java.util.function.Consumer;
 
 public class FileProcessor {
     private final MetadataExtractorFactory metadataExtractorFactory;
-    private final Consumer<File> fileHandler;
+    private final Consumer<MediaMetadata> fileHandler;
 
-    public FileProcessor(Consumer<File> fileHandler) {
+    public FileProcessor(Consumer<MediaMetadata> fileHandler) {
         this.metadataExtractorFactory = new MetadataExtractorFactory();
         this.fileHandler = fileHandler;
     }
@@ -25,7 +25,7 @@ public class FileProcessor {
                 .ifPresent(extractor -> {
                     Optional<MediaMetadata> metadata = extractor.extract(file);
                     metadata.ifPresentOrElse(
-                            m -> fileHandler.accept(file),
+                            fileHandler,
                             () -> handleUnsupportedFormat(file)
                     );
                 });

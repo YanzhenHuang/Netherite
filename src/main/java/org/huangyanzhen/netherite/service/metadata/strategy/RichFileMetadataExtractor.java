@@ -4,6 +4,8 @@ import com.drew.imaging.ImageProcessingException;
 import com.drew.metadata.Directory;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.MetadataException;
+import com.drew.metadata.Tag;
+import com.drew.metadata.exif.ExifIFD0Directory;
 import com.drew.metadata.exif.ExifSubIFDDirectory;
 import com.drew.metadata.exif.GpsDirectory;
 import org.huangyanzhen.netherite.service.metadata.MetadataExtractor;
@@ -18,6 +20,7 @@ import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Collection;
 import java.util.Optional;
 
 public abstract class RichFileMetadataExtractor implements MetadataExtractor {
@@ -38,9 +41,6 @@ public abstract class RichFileMetadataExtractor implements MetadataExtractor {
              * 先透过MetadataReader获取图片的全部元数据。
              */
             Metadata metadata = readMetadata(file);
-            Directory exifDir = metadata.getFirstDirectoryOfType(ExifSubIFDDirectory.class);
-            Directory gpsDir = metadata.getFirstDirectoryOfType(GpsDirectory.class);
-
 
             /*
              * 获取到数据后构建可以构建的MediaMetadata对象部分。
@@ -52,55 +52,11 @@ public abstract class RichFileMetadataExtractor implements MetadataExtractor {
                                     .toLocalDateTime()
                     )
                     .filename(file.getName())
+                    .exifData(new EXIFData(metadata))
                     .isValid(true);
 
-            // 图片没有EXIF字段，构建停止。
-            if (exifDir != null) {
-
-                EXIFData.Builder exifDataBuilder = new EXIFData.Builder();
-
-                /*
-                 * 尝试获取可用的EXIF字段并加入构建。
-                 */
-                if (exifDir.containsTag(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL)) {
-                    String _dateTime = exifDir.getString(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL);
-                    LocalDateTime dateTime = LocalDateTime.parse(_dateTime, FORMATTER);
-                    exifDataBuilder.datetimeOriginal(dateTime);
-                }
-
-                if (exifDir.containsTag(ExifSubIFDDirectory.TAG_DATETIME)) {
-                    String _dateTime = exifDir.getString(ExifSubIFDDirectory.TAG_DATETIME);
-                    LocalDateTime dateTime = LocalDateTime.parse(_dateTime, FORMATTER);
-                    exifDataBuilder.datetime(dateTime);
-                }
-
-                if (exifDir.containsTag(ExifSubIFDDirectory.TAG_MAKE)) {
-                    exifDataBuilder.make(exifDir.getString(ExifSubIFDDirectory.TAG_MAKE));
-                }
-
-                if (exifDir.containsTag(ExifSubIFDDirectory.TAG_MODEL)) {
-                    exifDataBuilder.model(exifDir.getString(ExifSubIFDDirectory.TAG_MODEL));
-                }
-
-                metadataBuilder.exifData(exifDataBuilder.build());
-            }
-
-            if (gpsDir != null) {
-                GeoLocationData.Builder geoLocationDataBuilder = new GeoLocationData.Builder();
-                if (gpsDir.containsTag(GpsDirectory.TAG_LONGITUDE))
-                    geoLocationDataBuilder.longitude(gpsDir.getLong(GpsDirectory.TAG_LONGITUDE));
-
-                if (gpsDir.containsTag(GpsDirectory.TAG_LATITUDE))
-                    geoLocationDataBuilder.latitude(gpsDir.getLong(GpsDirectory.TAG_LATITUDE));
-
-                if (gpsDir.containsTag(GpsDirectory.TAG_ALTITUDE))
-                    geoLocationDataBuilder.altitude(gpsDir.getDouble(GpsDirectory.TAG_ALTITUDE));
-
-                metadataBuilder.geoLocationData(geoLocationDataBuilder.build());
-            }
-
             return Optional.of(metadataBuilder.build());
-        } catch (ImageProcessingException | IOException | MetadataException ignored) {
+        } catch (ImageProcessingException | IOException ignored) {
         }
 
         return Optional.empty();

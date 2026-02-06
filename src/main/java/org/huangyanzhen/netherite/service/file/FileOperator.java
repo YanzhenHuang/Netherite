@@ -1,5 +1,7 @@
 package org.huangyanzhen.netherite.service.file;
 
+import org.huangyanzhen.netherite.service.model.metadata.MediaMetadata;
+
 import java.io.File;
 import java.util.Objects;
 import java.util.function.BiFunction;
@@ -24,4 +26,17 @@ public class FileOperator {
             fn.apply(f, depth);
         }
     }
+
+    public static void readAllFiles(File root) {
+
+        FileProcessor fp = new FileProcessor(mediaMetadata -> System.out.println(mediaMetadata));
+        traverseDirTree(root, (file, depth) -> {
+//            MediaMetadata metadata = FileProcessor.pro(file);
+            fp.processFile(file);
+
+            System.out.println(file.getAbsolutePath());
+            return true;
+        }, 0);
+    }
+
 }
