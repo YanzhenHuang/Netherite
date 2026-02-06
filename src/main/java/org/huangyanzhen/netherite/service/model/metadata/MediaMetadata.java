@@ -30,6 +30,14 @@ public record MediaMetadata(
         }
     }
 
+    public EXIFData getExifData() {
+        return exifData;
+    }
+
+    public GeoLocationData getGeoLocationData() {
+        return geoLocationData;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("MediaMetadata {")
