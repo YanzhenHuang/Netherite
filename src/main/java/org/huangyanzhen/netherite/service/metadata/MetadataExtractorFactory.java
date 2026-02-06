@@ -1,7 +1,7 @@
 package org.huangyanzhen.netherite.service.metadata;
 
-import org.huangyanzhen.netherite.service.metadata.strategy.RichImageMetadataExtractor;
-import org.huangyanzhen.netherite.service.metadata.strategy.RichMp4MetadataExtractor;
+import org.huangyanzhen.netherite.service.metadata.strategy.ImageMetadataExtractor;
+import org.huangyanzhen.netherite.service.metadata.strategy.Mp4MetadataExtractor;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -13,8 +13,8 @@ public class MetadataExtractorFactory {
 
     public MetadataExtractorFactory() {
         extractors = new ArrayList<>();
-        extractors.add(new RichImageMetadataExtractor());
-        extractors.add(new RichMp4MetadataExtractor());
+        extractors.add(new ImageMetadataExtractor());
+        extractors.add(new Mp4MetadataExtractor());
     }
 
     public Optional<MetadataExtractor> getExtractorForFile(File file) {

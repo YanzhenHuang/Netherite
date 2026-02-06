@@ -1,8 +1,7 @@
-package org.huangyanzhen.netherite.service.metadata.strategy;
+package org.huangyanzhen.netherite.service.metadata;
 
 import com.drew.imaging.ImageProcessingException;
 import com.drew.metadata.Metadata;
-import org.huangyanzhen.netherite.service.metadata.MetadataExtractor;
 import org.huangyanzhen.netherite.service.model.metadata.MediaMetadata;
 import org.huangyanzhen.netherite.service.model.metadata.subdirectory.EXIFData;
 import org.huangyanzhen.netherite.service.model.metadata.subdirectory.GeoLocationData;
@@ -12,7 +11,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
 
-public abstract class RichFileMetadataExtractor implements MetadataExtractor {
+public abstract class AbstractMetadataExtractor implements MetadataExtractor {
 
     /**
      * 不同的文件类型，需要不同的元数据读取器。
