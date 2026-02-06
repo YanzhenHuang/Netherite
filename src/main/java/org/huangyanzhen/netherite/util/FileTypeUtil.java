@@ -1,24 +1,17 @@
 package org.huangyanzhen.netherite.util;
 
 
-import org.huangyanzhen.netherite.util.types.PlainMediaFileType;
-import org.huangyanzhen.netherite.util.types.RichMediaFileType;
+import org.huangyanzhen.netherite.util.types.ImageFileTypes;
+import org.huangyanzhen.netherite.util.types.VideoFileTypes;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.stream.Stream;
 
 
 public class FileTypeUtil {
 
-    private static final String[] IMAGE_EXTS = {
-            "jpg", "jpeg", "png", "bmp", "gif", "tiff", "webp"
-    };
-
-    private static final String[] VIDEO_EXTS = {
-            "mp4", "mov", "avi", "mkv", "flv", "wmv", "mpg", "mpeg"
-    };
-
-    private static String getExtension(File file) {
+    public static String getExtension(File file) {
         String name = file.getName();
         int i = name.lastIndexOf('.');
 
@@ -31,23 +24,41 @@ public class FileTypeUtil {
     public static MediaType getMediaType(File file) {
         String ext = getExtension(file).toLowerCase();
 
-        if (Arrays.asList(IMAGE_EXTS).contains(ext))
+        if (Arrays.asList(ImageFileTypes.list()).contains(ext))
             return MediaType.IMAGE;
 
-        if (Arrays.asList(VIDEO_EXTS).contains(ext))
+        if (Arrays.asList(VideoFileTypes.list()).contains(ext))
             return MediaType.VIDEO;
 
         return MediaType.UNSUPPORTED;
     }
 
+    public static String[] listRichTypes() {
+        String[] richImageTypes = ImageFileTypes.listRich();
+        String[] richVideoTypes = VideoFileTypes.listRich();
+        return Stream.concat(
+                Arrays.stream(richImageTypes),
+                Arrays.stream(richVideoTypes)
+        ).toArray(String[]::new);
+    }
+
+    public static String[] listPlainTypes() {
+        String[] plainImageTypes = ImageFileTypes.listPlain();
+        String[] plainVideoTypes = VideoFileTypes.listPlain();
+        return Stream.concat(
+                Arrays.stream(plainImageTypes),
+                Arrays.stream(plainVideoTypes)
+        ).toArray(String[]::new);
+    }
+
     public static boolean isRich(File file) {
         String ext = getExtension(file).toLowerCase();
-        return Arrays.asList(RichMediaFileType.list()).contains(ext);
+        return Arrays.asList(listRichTypes()).contains(ext);
     }
 
     public static boolean isPlain(File file) {
         String ext = getExtension(file).toLowerCase();
-        return Arrays.asList(PlainMediaFileType.list()).contains(ext);
+        return Arrays.asList(listPlainTypes()).contains(ext);
     }
 
     public static boolean isSupported(File file) {

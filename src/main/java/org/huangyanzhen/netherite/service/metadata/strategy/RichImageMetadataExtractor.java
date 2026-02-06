@@ -8,7 +8,6 @@ import org.huangyanzhen.netherite.util.MediaType;
 
 import java.io.File;
 import java.io.IOException;
-import java.time.format.DateTimeFormatter;
 
 public class RichImageMetadataExtractor extends RichFileMetadataExtractor {
 
