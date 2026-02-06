@@ -29,7 +29,7 @@ public class FileOperator {
 
     public static void readAllFiles(File root) {
 
-        FileProcessor fp = new FileProcessor(mediaMetadata -> System.out.println(mediaMetadata));
+        FileProcessor fp = new FileProcessor(System.out::println);
         traverseDirTree(root, (file, depth) -> {
 //            MediaMetadata metadata = FileProcessor.pro(file);
             fp.processFile(file);

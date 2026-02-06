@@ -56,17 +56,15 @@ public record MediaMetadata(
         }
     }
 
-    public LocalDateTime getRecommendedDateTime() {
-        LocalDateTime worseDateTime = fileSystemDateTime == null ?
-                LocalDateTime.now() : fileSystemDateTime;
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("MediaMetadata {")
+                .append("\n\tfileSystemDateTime: ").append(fileSystemDateTime)
+                .append("\n\tfilename: ").append(filename)
+                .append("\n\texifData: ").append(exifData)
+                .append("\n}");
 
-        if (exifData == null)
-            return worseDateTime;
-
-        if (exifData.datetimeOriginal() != null) return exifData.datetimeOriginal();
-        if (exifData.datetime() != null) return exifData.datetime();
-
-        return worseDateTime;
+        return sb.toString();
     }
 }
 
