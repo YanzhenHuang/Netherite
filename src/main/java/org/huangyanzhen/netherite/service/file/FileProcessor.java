@@ -1,5 +1,6 @@
 package org.huangyanzhen.netherite.service.file;
 
+import org.huangyanzhen.netherite.service.model.media.Media;
 import org.huangyanzhen.netherite.service.model.metadata.MediaMetadata;
 import org.huangyanzhen.netherite.service.metadata.MetadataExtractorFactory;
 import org.huangyanzhen.netherite.util.FileTypeUtil;
@@ -10,22 +11,27 @@ import java.util.function.Consumer;
 
 public class FileProcessor {
     private final MetadataExtractorFactory metadataExtractorFactory;
-    private final Consumer<MediaMetadata> fileHandler;
+    private final Consumer<Media> mediaHandler;
 
-    public FileProcessor(Consumer<MediaMetadata> fileHandler) {
+    public FileProcessor(Consumer<Media> mediaHandler) {
         this.metadataExtractorFactory = new MetadataExtractorFactory();
-        this.fileHandler = fileHandler;
+        this.mediaHandler = mediaHandler;
     }
 
     public void processFile(File file) {
-        if (!file.isFile() || !FileTypeUtil.isSupported( file))
+        if (!file.isFile() || !FileTypeUtil.isSupported(file))
             return;
 
         metadataExtractorFactory.getExtractorForFile(file)
+                // Extractor Exists
                 .ifPresent(extractor -> {
+                    // Obtain file, extract metadata, and wrap file and metadata into media.
                     Optional<MediaMetadata> metadata = extractor.extract(file);
                     metadata.ifPresentOrElse(
-                            fileHandler,
+                            (mediaMetaData) -> {
+                                // let media as the callback input
+                                mediaHandler.accept(new Media(file, mediaMetaData));
+                            },
                             () -> handleUnsupportedFormat(file)
                     );
                 });

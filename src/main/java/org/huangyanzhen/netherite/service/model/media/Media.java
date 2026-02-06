@@ -1,4 +1,4 @@
-package org.huangyanzhen.netherite.service.model.metadata.media;
+package org.huangyanzhen.netherite.service.model.media;
 
 import org.huangyanzhen.netherite.service.model.metadata.MediaMetadata;
 
@@ -7,7 +7,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
-public abstract class Media {
+public class Media {
     private final File file;
     private final MediaMetadata mediaMetaData;
 
@@ -21,6 +21,7 @@ public abstract class Media {
 
     /**
      * 获取媒体文件名
+     *
      * @return 媒体文件名
      */
     public String getFilename() {
@@ -28,7 +29,17 @@ public abstract class Media {
     }
 
     /**
+     * 获取媒体文件路径
+     *
+     * @return 媒体文件路径
+     */
+    public String getFilePath() {
+        return file.getAbsolutePath();
+    }
+
+    /**
      * 获取媒体文件大小（KB）
+     *
      * @return 媒体文件大小
      */
     public String getFileSizeKB() {
@@ -38,6 +49,7 @@ public abstract class Media {
 
     /**
      * 获取媒体文件系统时间
+     *
      * @return 媒体文件系统时间
      */
     public LocalDateTime getFileSystemTime() {
@@ -47,7 +59,24 @@ public abstract class Media {
         );
     }
 
+    /**
+     * 获取媒体元数据
+     *
+     * @return 媒体元数据
+     */
     public MediaMetadata getMediaMetaData() {
         return mediaMetaData;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder()
+                .append("======== Media ========")
+                .append("\nPath:").append(getFilePath())
+                .append("\nName:").append(getFilename())
+                .append("\nSize:").append(getFileSizeKB()).append("KB")
+                .append("\n").append(getMediaMetaData());
+
+        return sb.toString();
     }
 }
