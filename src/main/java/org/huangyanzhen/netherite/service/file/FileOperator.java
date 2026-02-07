@@ -3,6 +3,8 @@ package org.huangyanzhen.netherite.service.file;
 import org.huangyanzhen.netherite.service.model.media.Media;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.function.BiFunction;
@@ -69,25 +71,13 @@ public class FileOperator {
             return false;
 
         try {
-            if (!dest.createNewFile()) return false;
-
-            InputStream in = new FileInputStream(src);
-            OutputStream out = new FileOutputStream(dest);
-
-            int b = 0;
-
-            while (b != -1) {
-                b = in.read();
-                out.write(b);
-            }
-
-            in.close();
-            out.close();
-
+            Path srcPath = src.toPath();
+            Path destPath = dest.toPath();
+            Files.copy(srcPath, destPath);
+            return true;
         } catch (IOException e) {
             return false;
         }
 
-        return true;
     }
 }
