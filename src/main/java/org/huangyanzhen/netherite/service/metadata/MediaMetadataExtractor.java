@@ -1,16 +1,26 @@
 package org.huangyanzhen.netherite.service.metadata;
 
+import com.drew.imaging.FileType;
 import com.drew.imaging.ImageProcessingException;
 import com.drew.metadata.Metadata;
 import org.huangyanzhen.netherite.service.model.metadata.MediaMetadata;
 import org.huangyanzhen.netherite.service.model.metadata.directory.strategy.EXIFData;
 import org.huangyanzhen.netherite.service.model.metadata.directory.strategy.GeoLocationData;
+import org.huangyanzhen.netherite.util.FileTypeUtil;
+import org.huangyanzhen.netherite.util.types.VideoFileTypes;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
 
 public abstract class MediaMetadataExtractor {
+
+    /**
+     * 检查文件是否受该提取器支持
+     * @param file 文件对象
+     * @return 文件是否受该提取器支持
+     */
+    public abstract boolean supports(File file);
 
     /**
      * 不同的文件类型，需要不同的元数据读取器。
@@ -23,11 +33,11 @@ public abstract class MediaMetadataExtractor {
             throws IOException, ImageProcessingException;
 
     /**
-     * 检查文件是否受该提取器支持
-     * @param file 文件对象
-     * @return 文件是否受该提取器支持
+     * 构建MediaMetadata对象
+     * @param metadata Metadata对象
+     * @return MediaMetadata对象
      */
-    public abstract boolean supports(File file);
+    public abstract MediaMetadata.Builder buildMetadata(Metadata metadata);
 
     /**
      * 提取文件元数据
@@ -47,13 +57,10 @@ public abstract class MediaMetadataExtractor {
             /*
              * 获取到数据后构建可以构建的MediaMetadata对象部分。
              */
-            MediaMetadata.Builder metadataBuilder = new MediaMetadata.Builder()
-                    .exifData(new EXIFData(metadata))
-                    .geoLocationData(new GeoLocationData(metadata));
+            MediaMetadata.Builder metadataBuilder = buildMetadata(metadata);
 
             return Optional.of(metadataBuilder.build());
-        } catch (ImageProcessingException | IOException ignored) {
-        }
+        } catch (ImageProcessingException | IOException ignored) {}
 
         return Optional.empty();
     }

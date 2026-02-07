@@ -3,19 +3,35 @@ package org.huangyanzhen.netherite.service.model.metadata.directory;
 import com.drew.metadata.Directory;
 import javafx.util.Pair;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 public abstract class DirectoryData {
+    protected DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy:MM:dd HH:mm:ss");
 
     /**
      * 检查整个字段是否为空
+     *
      * @return 字段是否为空
      */
     public abstract boolean isEmpty();
 
     /**
+     * 解析时间字符串
+     *
+     * @param timeStr 时间字符串
+     * @return LocalDateTime对象
+     */
+    protected LocalDateTime parseTime(String timeStr) {
+        return LocalDateTime.parse(timeStr, FORMATTER);
+    }
+
+    /**
      * 检查字段目录是否为空
+     *
      * @param d 目录
      * @return 字段是否为空
      */

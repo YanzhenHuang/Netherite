@@ -4,6 +4,7 @@ import com.drew.metadata.Metadata;
 import com.drew.metadata.exif.GpsDirectory;
 import javafx.util.Pair;
 import org.huangyanzhen.netherite.service.model.metadata.directory.DirectoryData;
+import org.huangyanzhen.netherite.util.log.obj2json.ObjectString;
 
 import java.util.Optional;
 
@@ -64,14 +65,12 @@ public class GeoLocationData extends DirectoryData {
 
     @Override
     public String toString() {
-        if (isEmpty()) return "<Empty>";
+        if (isEmpty()) return "{}";
 
-        StringBuilder sb = new StringBuilder();
-        sb.append("{\n\t\tCoordinate: ").append(getCoordinate())
-                .append(", \n\t\tAltitude: ").append(getAltitude())
-                .append(", \n\t\tGPSTimestamp: ").append(getGPSTimestamp())
-                .append(", \n\t\tBattery: ").append(getBattery())
-                .append(" \n\t}");
-        return sb.toString();
+        ObjectString obs = new ObjectString(2)
+                .put("Altitude", getAltitude().toString())
+                .put("GPSTimestamp", getGPSTimestamp().toString())
+                .put("Battery", getBattery().toString());
+        return obs.toString();
     }
 }

@@ -7,6 +7,7 @@ import com.drew.metadata.exif.ExifSubIFDDirectory;
 import com.drew.metadata.exif.ExifThumbnailDirectory;
 import javafx.util.Pair;
 import org.huangyanzhen.netherite.service.model.metadata.directory.DirectoryData;
+import org.huangyanzhen.netherite.util.log.obj2json.ObjectString;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -14,7 +15,6 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 public class EXIFData extends DirectoryData {
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy:MM:dd HH:mm:ss");
 
     /**
      * 三个主要的EXIF Directory
@@ -27,10 +27,6 @@ public class EXIFData extends DirectoryData {
         this.d0Dir = metadata.getFirstDirectoryOfType(ExifIFD0Directory.class);
         this.subIfDir = metadata.getFirstDirectoryOfType(ExifSubIFDDirectory.class);
         this.thumbnailDir = metadata.getFirstDirectoryOfType(ExifThumbnailDirectory.class);
-    }
-
-    private LocalDateTime parseTime(String timeStr) {
-        return LocalDateTime.parse(timeStr, FORMATTER);
     }
 
     /**
@@ -47,6 +43,7 @@ public class EXIFData extends DirectoryData {
 
     /**
      * 根据优先级，从EXIF中获取最合适的时间。
+     *
      * @return Optional
      */
     public Optional<LocalDateTime> getRecommendedExifTime() {
@@ -179,24 +176,22 @@ public class EXIFData extends DirectoryData {
 
     @Override
     public String toString() {
-        if (isEmpty()) return "<Empty>";
-
-        StringBuilder sb = new StringBuilder();
-        sb.append("{\n\t\tRecommendedDateTime: ").append(getRecommendedExifTime())
-                .append(", \n\t\tManufacturer: ").append(getDeviceManufacturer())
-                .append(", \n\t\tDeviceModel: ").append(getDeviceModel())
-                .append(", \n\t\tFNumber: ").append(getFNumber())
-                .append(", \n\t\tExposureTime: ").append(getExposureTime())
-                .append(", \n\t\tISO: ").append(getISO())
-                .append(", \n\t\tFlash: ").append(getFlash())
-                .append(", \n\t\tWhiteBalance: ").append(getWhiteBalance())
-                .append(", \n\t\tLensManufacturer: ").append(getLensManufacturer())
-                .append(", \n\t\tLensModel: ").append(getLensModel())
-                .append(", \n\t\tColorSpace: ").append(getColorSpace())
-                .append(", \n\t\tCompression: ").append(getCompression())
-                .append(", \n\t\tOrientation: ").append(getOrientation())
-                .append(", \n\t\tResolution: ").append(getResolution())
-                .append(" \n\t}");
-        return sb.toString();
+        if (isEmpty()) return "{}";
+        ObjectString obs = new ObjectString(2);
+        obs.put("RecommendedDateTime", getRecommendedExifTime().toString())
+                .put("Manufacturer", getDeviceManufacturer().toString())
+                .put("DeviceModel", getDeviceModel().toString())
+                .put("FNumber", getFNumber().toString())
+                .put("ExposureTime", getExposureTime().toString())
+                .put("ISO", getISO().toString())
+                .put("Flash", getFlash().toString())
+                .put("WhiteBalance", getWhiteBalance().toString())
+                .put("LensManufacturer", getLensManufacturer().toString())
+                .put("LensModel", getLensModel().toString())
+                .put("ColorSpace", getColorSpace().toString())
+                .put("Compression", getCompression().toString())
+                .put("Orientation", getOrientation().toString())
+                .put("Resolution", getResolution().toString());
+        return obs.toString();
     }
 }

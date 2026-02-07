@@ -1,6 +1,7 @@
 package org.huangyanzhen.netherite.service.model.media;
 
 import org.huangyanzhen.netherite.service.model.metadata.MediaMetadata;
+import org.huangyanzhen.netherite.util.log.obj2json.ObjectString;
 
 import java.io.File;
 import java.time.Instant;
@@ -70,13 +71,21 @@ public class Media {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder()
-                .append("======== Media ========")
-                .append("\nPath:").append(getFilePath())
-                .append("\nName:").append(getFilename())
-                .append("\nSize:").append(getFileSizeKB()).append("KB")
-                .append("\n").append(getMediaMetaData());
+//        StringBuilder sb = new StringBuilder()
+//                .append("======== Media ========")
+//                .append("\nPath:").append(getFilePath())
+//                .append("\nName:").append(getFilename())
+//                .append("\nSize:").append(getFileSizeKB()).append("KB")
+//                .append("\n").append(getMediaMetaData());
 
-        return sb.toString();
+//        return sb.toString();
+
+        ObjectString obs = new ObjectString(0);
+        obs.put("Path", getFilePath())
+                .put("Name", getFilename())
+                .put("Size", getFileSizeKB())
+                .put("MediaMetaData", getMediaMetaData());
+
+        return obs.toString();
     }
 }
