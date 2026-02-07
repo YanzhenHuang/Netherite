@@ -2,6 +2,7 @@ package org.huangyanzhen.netherite.service.model.metadata.directory.strategy;
 
 import com.drew.metadata.Metadata;
 import com.drew.metadata.exif.GpsDirectory;
+import javafx.util.Pair;
 import org.huangyanzhen.netherite.service.model.metadata.directory.DirectoryData;
 
 import java.util.Optional;
@@ -24,21 +25,14 @@ public class GeoLocationData extends DirectoryData {
     }
 
     /**
-     * 获取纬度
+     * 获取经纬度坐标
      *
-     * @return 纬度
+     * @return 经纬度坐标
      */
-    public Optional<String> getLatitude() {
-        return get(gpsDir, GpsDirectory.TAG_LATITUDE);
-    }
-
-    /**
-     * 获取经度
-     *
-     * @return 经度
-     */
-    public Optional<String> getLongitude() {
-        return get(gpsDir, GpsDirectory.TAG_LONGITUDE);
+    public Optional<Pair<String, String>> getCoordinate() {
+        return getBothOrNone(gpsDir,
+                GpsDirectory.TAG_LATITUDE,
+                GpsDirectory.TAG_LONGITUDE);
     }
 
     /**
@@ -73,8 +67,7 @@ public class GeoLocationData extends DirectoryData {
         if (isEmpty()) return "<Empty>";
 
         StringBuilder sb = new StringBuilder();
-        sb.append("{\n\t\tLatitude: ").append(getLatitude())
-                .append(", \n\t\tLongitude: ").append(getLongitude())
+        sb.append("{\n\t\tCoordinate: ").append(getCoordinate())
                 .append(", \n\t\tAltitude: ").append(getAltitude())
                 .append(", \n\t\tGPSTimestamp: ").append(getGPSTimestamp())
                 .append(", \n\t\tBattery: ").append(getBattery())
