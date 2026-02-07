@@ -1,7 +1,7 @@
 package org.huangyanzhen.netherite.service.model.metadata;
 
-import org.huangyanzhen.netherite.service.model.metadata.subdirectory.EXIFData;
-import org.huangyanzhen.netherite.service.model.metadata.subdirectory.GeoLocationData;
+import org.huangyanzhen.netherite.service.model.metadata.directory.strategy.EXIFData;
+import org.huangyanzhen.netherite.service.model.metadata.directory.strategy.GeoLocationData;
 
 public record MediaMetadata(
         EXIFData exifData,

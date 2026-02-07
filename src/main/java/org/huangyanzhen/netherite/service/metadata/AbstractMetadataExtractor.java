@@ -3,8 +3,8 @@ package org.huangyanzhen.netherite.service.metadata;
 import com.drew.imaging.ImageProcessingException;
 import com.drew.metadata.Metadata;
 import org.huangyanzhen.netherite.service.model.metadata.MediaMetadata;
-import org.huangyanzhen.netherite.service.model.metadata.subdirectory.EXIFData;
-import org.huangyanzhen.netherite.service.model.metadata.subdirectory.GeoLocationData;
+import org.huangyanzhen.netherite.service.model.metadata.directory.strategy.EXIFData;
+import org.huangyanzhen.netherite.service.model.metadata.directory.strategy.GeoLocationData;
 import org.huangyanzhen.netherite.util.FileTypeUtil;
 
 import java.io.File;

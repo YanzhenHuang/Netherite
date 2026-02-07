@@ -1,16 +1,19 @@
-package org.huangyanzhen.netherite.service.model.metadata.subdirectory;
+package org.huangyanzhen.netherite.service.model.metadata.directory.strategy;
 
+import com.drew.metadata.Directory;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.exif.ExifIFD0Directory;
 import com.drew.metadata.exif.ExifSubIFDDirectory;
 import com.drew.metadata.exif.ExifThumbnailDirectory;
 import javafx.util.Pair;
+import org.huangyanzhen.netherite.service.model.metadata.directory.DirectoryData;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
+import java.util.stream.Stream;
 
-public class EXIFData {
+public class EXIFData extends DirectoryData {
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy:MM:dd HH:mm:ss");
 
     /**
@@ -35,34 +38,24 @@ public class EXIFData {
      *
      * @return EXIF完全为空
      */
+    @Override
     public boolean isEmpty() {
-        return d0Dir == null && subIfDir == null && thumbnailDir == null;
+        return isDirectoryEmpty(d0Dir)
+                || isDirectoryEmpty(subIfDir)
+                || isDirectoryEmpty(thumbnailDir);
     }
 
     /**
      * 根据优先级，从EXIF中获取最合适的时间。
-     *
      * @return Optional
      */
     public Optional<LocalDateTime> getRecommendedExifTime() {
 
-        if (subIfDir == null) return Optional.empty();
-
-        // Original Date Time
-        if (subIfDir.containsTag(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL))
-            return Optional.of(parseTime(subIfDir.getString(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL)));
-
-        // Date Time
-        if (subIfDir.containsTag(ExifSubIFDDirectory.TAG_DATETIME))
-            return Optional.of(parseTime(subIfDir.getString(ExifSubIFDDirectory.TAG_DATETIME)));
-
-        if (d0Dir == null) return Optional.empty();
-
-        // 文件写入时间，非拍摄时间
-        if (d0Dir.containsTag(ExifIFD0Directory.TAG_DATETIME))
-            return Optional.of(parseTime(d0Dir.getString(ExifIFD0Directory.TAG_DATETIME)));
-
-        return Optional.empty();
+        return getBestExist(Stream.of(
+                new Pair<Directory, Integer>(subIfDir, ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL),
+                new Pair<>(subIfDir, ExifSubIFDDirectory.TAG_DATETIME),
+                new Pair<>(d0Dir, ExifIFD0Directory.TAG_DATETIME)).toList()
+        ).map(this::parseTime);
     }
 
     /**
@@ -71,8 +64,7 @@ public class EXIFData {
      * @return 设备制造商 （可选）
      */
     public Optional<String> getDeviceManufacturer() {
-        if (d0Dir == null) return Optional.empty();
-        return Optional.ofNullable(d0Dir.getString(ExifIFD0Directory.TAG_MAKE));
+        return get(d0Dir, ExifIFD0Directory.TAG_MAKE);
     }
 
     /**
@@ -81,8 +73,7 @@ public class EXIFData {
      * @return 设备型号 （可选）
      */
     public Optional<String> getDeviceModel() {
-        if (d0Dir == null) return Optional.empty();
-        return Optional.ofNullable(d0Dir.getString(ExifIFD0Directory.TAG_MODEL));
+        return get(d0Dir, ExifIFD0Directory.TAG_MODEL);
     }
 
     /**
@@ -91,8 +82,7 @@ public class EXIFData {
      * @return 光圈值 （可选）
      */
     public Optional<String> getFNumber() {
-        if (subIfDir == null) return Optional.empty();
-        return Optional.ofNullable(subIfDir.getString(ExifSubIFDDirectory.TAG_FNUMBER));
+        return get(subIfDir, ExifSubIFDDirectory.TAG_FNUMBER);
     }
 
     /**
@@ -101,8 +91,7 @@ public class EXIFData {
      * @return 曝光时间 （可选）
      */
     public Optional<String> getExposureTime() {
-        if (subIfDir == null) return Optional.empty();
-        return Optional.ofNullable(subIfDir.getString(ExifSubIFDDirectory.TAG_EXPOSURE_TIME));
+        return get(subIfDir, ExifSubIFDDirectory.TAG_EXPOSURE_TIME);
     }
 
     /**
@@ -111,8 +100,7 @@ public class EXIFData {
      * @return ISO （可选）
      */
     public Optional<String> getISO() {
-        if (subIfDir == null) return Optional.empty();
-        return Optional.ofNullable(subIfDir.getString(ExifSubIFDDirectory.TAG_ISO_EQUIVALENT));
+        return get(subIfDir, ExifSubIFDDirectory.TAG_ISO_EQUIVALENT);
     }
 
     /**
@@ -121,8 +109,7 @@ public class EXIFData {
      * @return 闪光灯 （可选）
      */
     public Optional<String> getFlash() {
-        if (subIfDir == null) return Optional.empty();
-        return Optional.ofNullable(subIfDir.getString(ExifSubIFDDirectory.TAG_FLASH));
+        return get(subIfDir, ExifSubIFDDirectory.TAG_FLASH);
     }
 
     /**
@@ -131,68 +118,63 @@ public class EXIFData {
      * @return 白平衡 （可选）
      */
     public Optional<String> getWhiteBalance() {
-        if (subIfDir == null) return Optional.empty();
-        return Optional.ofNullable(subIfDir.getString(ExifSubIFDDirectory.TAG_WHITE_BALANCE));
+        return get(subIfDir, ExifSubIFDDirectory.TAG_WHITE_BALANCE);
     }
 
     /**
      * EXIF字段：镜头制造商
+     *
      * @return 镜头制造商 （可选）
      */
     public Optional<String> getLensManufacturer() {
-        if (subIfDir == null) return Optional.empty();
-        return Optional.ofNullable(subIfDir.getString(ExifSubIFDDirectory.TAG_LENS_MAKE));
+        return get(subIfDir, ExifSubIFDDirectory.TAG_LENS_MAKE);
     }
 
     /**
      * EXIF字段：镜头型号
+     *
      * @return 镜头型号 （可选）
      */
     public Optional<String> getLensModel() {
-        if (subIfDir == null) return Optional.empty();
-        return Optional.ofNullable(subIfDir.getString(ExifSubIFDDirectory.TAG_LENS_MODEL));
+        return get(subIfDir, ExifSubIFDDirectory.TAG_LENS_MODEL);
     }
 
     /**
      * EXIF字段：颜色空间
+     *
      * @return 颜色空间 （可选）
      */
     public Optional<String> getColorSpace() {
-        if (d0Dir == null) return Optional.empty();
-        return Optional.ofNullable(d0Dir.getString(ExifIFD0Directory.TAG_COLOR_SPACE));
+        return get(subIfDir, ExifSubIFDDirectory.TAG_COLOR_SPACE);
     }
 
     /**
      * EXIF字段：压缩方式
+     *
      * @return 压缩方式 （可选）
      */
     public Optional<String> getCompression() {
-        if (d0Dir == null) return Optional.empty();
-        return Optional.ofNullable(d0Dir.getString(ExifIFD0Directory.TAG_COMPRESSION));
+        return get(subIfDir, ExifSubIFDDirectory.TAG_COMPRESSION);
     }
 
     /**
      * EXIF字段：图片方向
+     *
      * @return 图片方向 （可选）
      */
     public Optional<String> getOrientation() {
-        if (d0Dir == null) return Optional.empty();
-        return Optional.ofNullable(d0Dir.getString(ExifIFD0Directory.TAG_ORIENTATION));
+        return get(subIfDir, ExifSubIFDDirectory.TAG_ORIENTATION);
     }
 
     /**
      * EXIF字段：分辨率, X-Y
+     *
      * @return 分辨率（可选）
      */
     public Optional<Pair<String, String>> getResolution() {
-        if (d0Dir == null ||
-                !d0Dir.containsTag(ExifIFD0Directory.TAG_X_RESOLUTION) ||
-                !d0Dir.containsTag(ExifSubIFDDirectory.TAG_Y_RESOLUTION))
-            return Optional.empty();
-        return Optional.of(new Pair<String, String>(
-                d0Dir.getString(ExifIFD0Directory.TAG_X_RESOLUTION),
-                d0Dir.getString(ExifIFD0Directory.TAG_Y_RESOLUTION)
-        ));
+        return getBothOrNone(subIfDir,
+                ExifSubIFDDirectory.TAG_X_RESOLUTION,
+                ExifSubIFDDirectory.TAG_Y_RESOLUTION);
     }
 
     @Override

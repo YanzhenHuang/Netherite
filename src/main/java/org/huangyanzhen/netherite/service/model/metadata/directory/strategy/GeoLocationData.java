@@ -1,16 +1,16 @@
-package org.huangyanzhen.netherite.service.model.metadata.subdirectory;
+package org.huangyanzhen.netherite.service.model.metadata.directory.strategy;
 
 import com.drew.metadata.Metadata;
 import com.drew.metadata.exif.GpsDirectory;
+import org.huangyanzhen.netherite.service.model.metadata.directory.DirectoryData;
 
-import javax.swing.text.html.Option;
 import java.util.Optional;
 
-public class GeoLocationData {
-    private final GpsDirectory gpsDirectory;
+public class GeoLocationData extends DirectoryData {
+    private final GpsDirectory gpsDir;
 
     public GeoLocationData(Metadata metadata) {
-        this.gpsDirectory = metadata.getFirstDirectoryOfType(GpsDirectory.class);
+        this.gpsDir = metadata.getFirstDirectoryOfType(GpsDirectory.class);
     }
 
     /**
@@ -18,53 +18,54 @@ public class GeoLocationData {
      *
      * @return GeoLocation完全为空
      */
+    @Override
     public boolean isEmpty() {
-        return gpsDirectory == null;
+        return isDirectoryEmpty(gpsDir);
     }
 
     /**
      * 获取纬度
+     *
      * @return 纬度
      */
     public Optional<String> getLatitude() {
-        if (gpsDirectory == null) return Optional.empty();
-        return Optional.of(gpsDirectory.getString(GpsDirectory.TAG_LATITUDE));
+        return get(gpsDir, GpsDirectory.TAG_LATITUDE);
     }
 
     /**
      * 获取经度
+     *
      * @return 经度
      */
     public Optional<String> getLongitude() {
-        if (gpsDirectory == null) return Optional.empty();
-        return Optional.of(gpsDirectory.getString(GpsDirectory.TAG_LONGITUDE));
+        return get(gpsDir, GpsDirectory.TAG_LONGITUDE);
     }
 
     /**
      * 获取高度
+     *
      * @return 高度
      */
     public Optional<String> getAltitude() {
-        if (gpsDirectory == null) return Optional.empty();
-        return Optional.of(gpsDirectory.getString(GpsDirectory.TAG_ALTITUDE));
+        return get(gpsDir, GpsDirectory.TAG_ALTITUDE);
     }
 
     /**
      * 获取GPS时间戳
+     *
      * @return GPS时间戳
      */
     public Optional<String> getGPSTimestamp() {
-        if (gpsDirectory == null) return Optional.empty();
-        return Optional.of(gpsDirectory.getString(GpsDirectory.TAG_TIME_STAMP));
+        return get(gpsDir, GpsDirectory.TAG_TIME_STAMP);
     }
 
     /**
      * 获取电量
+     *
      * @return 电量
      */
-    public Optional<String> getBattery(){
-        if (gpsDirectory == null) return Optional.empty();
-        return Optional.of(gpsDirectory.getString(GpsDirectory.TAG_BATTERY_LEVEL));
+    public Optional<String> getBattery() {
+        return get(gpsDir, GpsDirectory.TAG_BATTERY_LEVEL);
     }
 
     @Override
