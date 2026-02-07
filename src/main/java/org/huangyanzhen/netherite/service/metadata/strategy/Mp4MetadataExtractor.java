@@ -2,14 +2,14 @@ package org.huangyanzhen.netherite.service.metadata.strategy;
 
 import com.drew.imaging.mp4.Mp4MetadataReader;
 import com.drew.metadata.Metadata;
-import org.huangyanzhen.netherite.service.metadata.AbstractMetadataExtractor;
+import org.huangyanzhen.netherite.service.metadata.MediaMetadataExtractor;
 import org.huangyanzhen.netherite.util.FileTypeUtil;
 import org.huangyanzhen.netherite.util.types.VideoFileTypes;
 
 import java.io.File;
 import java.io.IOException;
 
-public class Mp4MetadataExtractor extends AbstractMetadataExtractor {
+public class Mp4MetadataExtractor extends MediaMetadataExtractor {
 
     @Override
     public Metadata readMetadata(File file) throws IOException {

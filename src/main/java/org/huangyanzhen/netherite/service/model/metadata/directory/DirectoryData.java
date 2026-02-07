@@ -30,7 +30,7 @@ public abstract class DirectoryData {
      * @param tagType 字段
      * @return 字段是否在目录中
      */
-    protected boolean checkInDirectory(Directory d, int tagType) {
+    protected boolean check(Directory d, int tagType) {
         return d != null && d.containsTag(tagType);
     }
 
@@ -59,7 +59,7 @@ public abstract class DirectoryData {
             Directory d, int tagType1, int tagType2) {
         if (d == null || !d.containsTag(tagType1) || !d.containsTag(tagType2))
             return Optional.empty();
-        return Optional.of(new Pair<String, String>(
+        return Optional.of(new Pair<>(
                 d.getString(tagType1),
                 d.getString(tagType2)
         ));
@@ -76,7 +76,7 @@ public abstract class DirectoryData {
         if (items == null || items.isEmpty()) return Optional.empty();
 
         return items.stream()
-                .filter(item -> checkInDirectory(item.getKey(), item.getValue()))
+                .filter(item -> check(item.getKey(), item.getValue()))
                 .findFirst().flatMap(item -> get(item.getKey(), item.getValue()));
     }
 }

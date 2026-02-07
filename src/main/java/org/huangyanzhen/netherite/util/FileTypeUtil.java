@@ -11,7 +11,15 @@ import java.util.stream.Stream;
 
 public class FileTypeUtil {
 
+    /**
+     * 获取文件拓展名
+     * @param file 文件对象
+     * @return 文件拓展名
+     */
     public static String getExtension(File file) {
+        if (file == null || !file.isFile())
+            return "";
+
         String name = file.getName();
         int i = name.lastIndexOf('.');
 
@@ -21,6 +29,11 @@ public class FileTypeUtil {
         return name.substring(i + 1);
     }
 
+    /**
+     * 获取媒体类型
+     * @param file 文件对象
+     * @return 媒体类型枚举
+     */
     public static MediaType getMediaType(File file) {
         String ext = getExtension(file).toLowerCase();
 
@@ -31,34 +44,6 @@ public class FileTypeUtil {
             return MediaType.VIDEO;
 
         return MediaType.UNSUPPORTED;
-    }
-
-    public static String[] listRichTypes() {
-        String[] richImageTypes = ImageFileTypes.listRich();
-        String[] richVideoTypes = VideoFileTypes.listRich();
-        return Stream.concat(
-                Arrays.stream(richImageTypes),
-                Arrays.stream(richVideoTypes)
-        ).toArray(String[]::new);
-    }
-
-    public static String[] listPlainTypes() {
-        String[] plainImageTypes = ImageFileTypes.listPlain();
-        String[] plainVideoTypes = VideoFileTypes.listPlain();
-        return Stream.concat(
-                Arrays.stream(plainImageTypes),
-                Arrays.stream(plainVideoTypes)
-        ).toArray(String[]::new);
-    }
-
-    public static boolean isRich(File file) {
-        String ext = getExtension(file).toLowerCase();
-        return Arrays.asList(listRichTypes()).contains(ext);
-    }
-
-    public static boolean isPlain(File file) {
-        String ext = getExtension(file).toLowerCase();
-        return Arrays.asList(listPlainTypes()).contains(ext);
     }
 
     public static boolean isSupported(File file) {

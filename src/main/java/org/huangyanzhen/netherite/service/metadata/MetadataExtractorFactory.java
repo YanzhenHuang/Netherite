@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class MetadataExtractorFactory {
-    private final List<MetadataExtractor> extractors;
+    private final List<MediaMetadataExtractor> extractors;
 
     public MetadataExtractorFactory() {
         extractors = new ArrayList<>();
@@ -17,12 +17,12 @@ public class MetadataExtractorFactory {
         extractors.add(new Mp4MetadataExtractor());
     }
 
-    public Optional<MetadataExtractor> getExtractorForFile(File file) {
-        for (MetadataExtractor extractor : extractors) {
-            if (extractor.supports(file))
-                return Optional.of(extractor);
+    public Optional<MediaMetadataExtractor> getExtractorForFile(File file) {
+        for (MediaMetadataExtractor extractor : extractors) {
+            if (extractor == null || !extractor.supports(file))
+                continue;
+            return Optional.of(extractor);
         }
-
         return Optional.empty();
     }
 }

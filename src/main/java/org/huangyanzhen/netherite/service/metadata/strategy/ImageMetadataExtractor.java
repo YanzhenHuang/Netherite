@@ -3,14 +3,14 @@ package org.huangyanzhen.netherite.service.metadata.strategy;
 import com.drew.imaging.ImageMetadataReader;
 import com.drew.imaging.ImageProcessingException;
 import com.drew.metadata.Metadata;
-import org.huangyanzhen.netherite.service.metadata.AbstractMetadataExtractor;
+import org.huangyanzhen.netherite.service.metadata.MediaMetadataExtractor;
 import org.huangyanzhen.netherite.util.FileTypeUtil;
 import org.huangyanzhen.netherite.util.MediaType;
 
 import java.io.File;
 import java.io.IOException;
 
-public class ImageMetadataExtractor extends AbstractMetadataExtractor {
+public class ImageMetadataExtractor extends MediaMetadataExtractor {
 
     @Override
     public Metadata readMetadata(File file) throws ImageProcessingException, IOException {

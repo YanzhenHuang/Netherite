@@ -5,13 +5,12 @@ import com.drew.metadata.Metadata;
 import org.huangyanzhen.netherite.service.model.metadata.MediaMetadata;
 import org.huangyanzhen.netherite.service.model.metadata.directory.strategy.EXIFData;
 import org.huangyanzhen.netherite.service.model.metadata.directory.strategy.GeoLocationData;
-import org.huangyanzhen.netherite.util.FileTypeUtil;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
 
-public abstract class AbstractMetadataExtractor implements MetadataExtractor {
+public abstract class MediaMetadataExtractor {
 
     /**
      * 不同的文件类型，需要不同的元数据读取器。
@@ -23,12 +22,18 @@ public abstract class AbstractMetadataExtractor implements MetadataExtractor {
     public abstract Metadata readMetadata(File file)
             throws IOException, ImageProcessingException;
 
-    @Override
-    public boolean supports(File file) {
-        return FileTypeUtil.isRich(file);
-    }
+    /**
+     * 检查文件是否受该提取器支持
+     * @param file 文件对象
+     * @return 文件是否受该提取器支持
+     */
+    public abstract boolean supports(File file);
 
-    @Override
+    /**
+     * 提取文件元数据
+     * @param file 文件对象
+     * @return 媒体元数据
+     */
     public Optional<MediaMetadata> extract(File file) {
         try {
             /*
