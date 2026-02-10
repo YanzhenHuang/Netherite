@@ -13,6 +13,7 @@ public class FileTypeUtil {
 
     /**
      * 获取文件拓展名
+     *
      * @param file 文件对象
      * @return 文件拓展名
      */
@@ -31,6 +32,7 @@ public class FileTypeUtil {
 
     /**
      * 获取媒体类型
+     *
      * @param file 文件对象
      * @return 媒体类型枚举
      */
@@ -47,6 +49,7 @@ public class FileTypeUtil {
     }
 
     public static boolean isSupported(File file) {
+        if (file == null || !file.isFile()) return false;
         return getMediaType(file) != MediaType.UNSUPPORTED;
     }
 

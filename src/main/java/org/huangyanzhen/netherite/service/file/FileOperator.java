@@ -1,11 +1,13 @@
 package org.huangyanzhen.netherite.service.file;
 
 import org.huangyanzhen.netherite.service.model.media.Media;
+import org.huangyanzhen.netherite.util.FileTypeUtil;
 
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.BiFunction;
 
@@ -43,20 +45,27 @@ public class FileOperator {
      * @param root 根目录
      */
     public static void readAllFiles(File root) {
-
-        ArrayList<Media> mediaList = new ArrayList<>();
-        FileProcessor fp = new FileProcessor(mediaList::add);
+        List<File> batchedFiles = new ArrayList<>();
+        FileProcessor fp = new FileProcessor(System.out::println);
 
         traverseDirTree(
                 root,
                 (file, depth) -> {
-                    fp.processFile(file); // 如果类型不受支持自动忽略。否则将媒体推入ArrayList
+                    if (!FileTypeUtil.isSupported(file)) {
+                        return true;
+                    }
+                    batchedFiles.add(file);
+                    if (batchedFiles.size() >= 20) {
+                        fp.processBatchedFiles(batchedFiles);
+                        batchedFiles.clear();
+                    }
                     return true;
                 }, 0, 20);
 
-        for (Media media : mediaList) {
-            System.out.println(media);
+        if (!batchedFiles.isEmpty()) {
+            fp.processBatchedFiles(batchedFiles);
         }
+        batchedFiles.clear();
     }
 
     /**

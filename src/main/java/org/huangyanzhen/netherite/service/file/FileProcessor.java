@@ -6,6 +6,7 @@ import org.huangyanzhen.netherite.service.metadata.MetadataExtractorFactory;
 import org.huangyanzhen.netherite.util.FileTypeUtil;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -19,7 +20,7 @@ public class FileProcessor {
     }
 
     public void processFile(File file) {
-        if (!file.isFile() || !FileTypeUtil.isSupported(file))
+        if (!FileTypeUtil.isSupported(file))
             return;
 
         metadataExtractorFactory.getExtractorForFile(file)
@@ -35,6 +36,12 @@ public class FileProcessor {
                             () -> handleUnsupportedFormat(file)
                     );
                 });
+    }
+
+    public void processBatchedFiles(Collection<File> files) {
+        for (File file: files) {
+            processFile(file);
+        }
     }
 
     public void handleUnsupportedFormat(File file) {
